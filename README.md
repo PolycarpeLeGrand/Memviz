@@ -1,4 +1,4 @@
-# Phidash
+# Memviz
 
 Template project for Dash dashboards
 
