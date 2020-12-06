@@ -76,7 +76,7 @@ example_tab = dbc.Container([
             card_no_head
         ], width=3),
     ], justify='center'),
-], fluid=True, id='example-tab')
+], fluid=True, id=TAB_ID)
 
 
 # callback go below

@@ -8,7 +8,7 @@ server = app.server
 
 
 if __name__ == '__main__':
-    public = False  # 24.212.252.134:33
+    public = True
     if public:
         ip = DEVICE_IP
         port = PORT

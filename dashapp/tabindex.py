@@ -3,19 +3,20 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 
-from dashapp import app, DATA
+from dashapp import app
 from dashapp.header import header
-from dashapp.exampletab import example_tab
 from dashapp.abouttab import about_tab
-
+from dashapp.metadata.metadatatab import metadata_tab
+from dashapp.topicscatter.topicscattertab import topicscatter_tab
 
 # Declare tabs following this format, 1 dist per tab
 # Can then filter to get info from input, see below
 # Replace search_key, search_value and target_key accordingly
 # next(filter(lambda x: x['search_key'] == 'search_value', TABS))['target_key']
 TABS = [
-    {'name': 'tab-0', 'url': '/extab', 'label': 'Example Tab', 'container': example_tab},
-    {'name': 'tab-1', 'url': '/about', 'label': 'About', 'container': about_tab},
+    {'name': 'tab-0', 'url': '/metadata', 'label': 'Metadonnées', 'container': metadata_tab},
+    {'name': 'tab-1', 'url': '/topicscatter', 'label': 'Topics et Clusters', 'container': topicscatter_tab},
+    {'name': 'tab-2', 'url': '/about', 'label': 'About', 'container': about_tab},
 ]
 
 
