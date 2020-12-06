@@ -64,7 +64,7 @@ def update_bags_fig(selected_part, split_doctypes):
 
     tdf = METADATA_DF.loc[:, (col, 'doctype_cat')]
     tdf[col] = tdf[col].map(lambda x: x if x < 11*size else 11*size-2)
-    tdf['bins'] = pd.cut(tdf[col], [i*size - 1 for i in range(12)], labels=[f'{i*size}-{i*size+499}' if i*size < 10*size else f'{i*size}+' for i in range(11)])
+    tdf['bins'] = pd.cut(tdf[col], [i*size - 1 for i in range(12)], labels=[f'{i*size}-{i*size+size-1}' if i*size < 10*size else f'{i*size}+' for i in range(11)])
     groups = ['bins', 'doctype_cat'] if split_doctypes else ['bins']
     tdf = tdf.groupby(groups).size().reset_index(name='counts')
     return px.bar(tdf, x='bins', y='counts', text='counts', color='doctype_cat' if split_doctypes else None,
