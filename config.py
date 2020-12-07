@@ -15,6 +15,9 @@ VIZ_DICTS_PATH = base_storage_path / 'viz_dicts'
 PORT = 33
 DEVICE_IP = '192.168.0.129'
 
+# Browser tab title
+PROJECT_TITLE = 'Memviz'
+
 # Title and subtitle to display on header
 HEADER_TITLE = 'Memviz'
 HEADER_SUBTITLE = 'Visualisation du corpus BioMed et des analyses'

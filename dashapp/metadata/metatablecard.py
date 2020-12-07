@@ -6,7 +6,7 @@ import plotly.express as px
 
 from dashapp import app, METADATA_DF
 
-MAX_TABLE_ROWS = 15
+MAX_TABLE_ROWS = 12
 
 
 meta_table_card = dbc.Card([
@@ -36,6 +36,7 @@ meta_table_card = dbc.Card([
                         marks={i*500: {'label': str(i*500) if i < 10 else '5000+'} for i in range(11)}),
         html.P(id='metadata-slider-para', style={'text-align': 'center'}),
         html.Div(id='metadata-table'),
+        html.H6(id='metadata-unique-values', className='pt-2 font-weight-bold')
     ])
 ])
 
@@ -44,7 +45,8 @@ meta_table_card = dbc.Card([
 
 @app.callback(
     [Output(component_id='metadata-table', component_property='children'),
-     Output(component_id='metadata-slider-para', component_property='children')],
+     Output(component_id='metadata-slider-para', component_property='children'),
+     Output(component_id='metadata-unique-values', component_property='children')],
     [Input(component_id='metadata-table-select', component_property='value'),
      Input(component_id='metadata-slider', component_property='value')],
     [State(component_id='metadata-table-select', component_property='options')]
@@ -55,7 +57,9 @@ def update_metadata_table(value, slider_values, options):
     max_tokens = slider_values[1] if slider_values[1] < 5000 else 1000000
     tdf = METADATA_DF[(METADATA_DF['text_tokens'] >= min_tokens) & (METADATA_DF['text_tokens'] <= max_tokens)]
     n = len(tdf)
-    tdf = tdf[value].value_counts().head(MAX_TABLE_ROWS)
+    tdf = tdf[value].value_counts()
+    total_values_text = f'Valeurs différentes: {len(tdf.index)}'
+    tdf = tdf.head(MAX_TABLE_ROWS)
     t = html.Table([
         html.Thead(
             html.Tr([html.Th(label), html.Th('Documents'), html.Th('Pct')])
@@ -68,5 +72,5 @@ def update_metadata_table(value, slider_values, options):
     ], style={'width': '100%'})
     text = ['Ajuster le slider pour filtrer par nombre de tokens.', html.Br(),
             f'Min tokens: {min_tokens} | Max tokens: {max_tokens if max_tokens < 10000 else "5000+"} | Total docs: {n}']
-    return t, text
+    return t, text, total_values_text
 

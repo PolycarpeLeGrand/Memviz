@@ -2,11 +2,11 @@ import pickle
 import dash
 import dash_bootstrap_components as dbc
 
-from config import METADATA_DF_PATH, TOPIC_REDUCTIONS_DF_PATH, DOC_TOPICS_DF_PATH, TOPIC_WORDS_DF_PATH, TOPIC_MAPPING
+from config import METADATA_DF_PATH, TOPIC_REDUCTIONS_DF_PATH, DOC_TOPICS_DF_PATH, TOPIC_WORDS_DF_PATH, TOPIC_MAPPING, PROJECT_TITLE
 
 G = 'https://fonts.googleapis.com/icon?family=Material+Icons'
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SIMPLEX, G], suppress_callback_exceptions=True)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SIMPLEX, G], suppress_callback_exceptions=True, title=PROJECT_TITLE)
 
 
 def load_df(path):
