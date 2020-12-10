@@ -5,6 +5,12 @@ base_storage_path = Path('C:/Users/Sanchez/Desktop/m3data')
 topic_model_name = 'topics_80_2_02_100_3_50_2k'
 
 METADATA_DF_PATH = base_storage_path / 'corpusframes/metadata_corpusframe.p'
+LEXICON_DF_PATH = base_storage_path / 'corpusframes/lexicon_corpusframe.p'
+
+LEXCATS_TEXTS_DF_PATH = base_storage_path / 'analysis/lexcats/lexcats_texts_3_df.p'
+LEXCATS_ABS_DF_PATH = base_storage_path / 'analysis/lexcats/lexcats_abs_3_df.p'
+LEXCATS_PARAS_DF_PATH = base_storage_path / 'analysis/lexcats/lexcats_paras_3_df.p'
+
 TOPIC_WORDS_DF_PATH = base_storage_path / 'analysis/LDA' / topic_model_name / 'topic_words_df.p'
 DOC_TOPICS_DF_PATH = base_storage_path / 'analysis/LDA' / topic_model_name / 'doc_topics_df.p'
 TOPIC_REDUCTIONS_DF_PATH = base_storage_path / 'analysis/LDA' / topic_model_name / 'reductions_df.p'

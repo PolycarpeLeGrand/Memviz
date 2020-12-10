@@ -60,6 +60,9 @@ def update_bags_fig(selected_part, split_doctypes):
               }
     col = params[selected_part]['df_col']
     size = params[selected_part]['bag_size']
+
+    if split_doctypes is None:
+        print('ASDSEHRTHRWETYJBHTRGCEFXWDFRTYUJHTRGFEDWFERTYUTRDSDZFGHJTHREFWDQERTHGFDSAD')
     split_doctypes = 1 in split_doctypes
 
     tdf = METADATA_DF.loc[:, (col, 'doctype_cat')]
