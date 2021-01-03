@@ -1,6 +1,7 @@
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+import csv
 
 
 def jumbotron_from_title_paragraphs(title, paragraphs, className='pt-2 pb-2'):
@@ -34,4 +35,20 @@ def text_with_info_tooltip(text, tooltip, text_id, placement='top'):
         dcc.Markdown(text + ' &#x1F6C8', text_id,  className='h6'),
         dbc.Tooltip(tooltip, target=text_id, placement=placement)
     ], className='h6')
+
+
+def csv_to_markdown(csv_file_path):
+    csvfile = open(csv_file_path, newline='')
+    text_dict = {n[0]: [n[i + 1] for i in range(len(n) - 1) if n[i + 1] != ''] for n in csv.reader(csvfile)}
+    text_str = '  \n'.join(f'**{key}:** ' + ', '.join(f'{value}' for value in values) for key, values in text_dict.items())
+    return dcc.Markdown(text_str, className='h6')
+
+
+if __name__ == '__main__':
+    from pathlib import Path
+    base_path = Path('C:/Users/Sanchez/Desktop/m3data')
+
+    print(csv_to_markdown(base_path / 'csvs/lexcats_3.csv'))
+
+
 

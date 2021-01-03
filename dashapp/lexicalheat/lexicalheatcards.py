@@ -6,7 +6,7 @@ from dash.exceptions import PreventUpdate
 import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.cluster import MiniBatchKMeans
-import pickle
+import urllib
 import pandas as pd
 
 from tools.factories import text_with_info_tooltip
@@ -15,17 +15,17 @@ from config import VIZ_DICTS_PATH
 
 
 lex_topics_formgroup = dbc.FormGroup([
-    dbc.Label('Selectionner le données', className='lead'),
+    dbc.Label('Selection des données', className='lead'),
     dbc.Select(
         options=[
             {'label': 'Textes complets', 'value': 'full_texts'},
-            {'label': 'Paragraphes', 'value': 'paragraphs', 'disabled': True},
+            {'label': 'Paragraphes', 'value': 'paragraphs'},
             {'label': 'Abstracts', 'value': 'abstracts'},
         ],
         value='full_texts',
         id='lex-topics-data-select',
     ),
-    dbc.Label('Selectionner le calcul', className='lead pt-4'),
+    dbc.Label('Selectionn de la visualisation', className='lead pt-4'),
     dbc.RadioItems(
         options=[
             {'label': 'Corrélations entre champs lexicaux', 'value': 'corrs'},
@@ -35,9 +35,11 @@ lex_topics_formgroup = dbc.FormGroup([
         value='corrs',
         id='lex-topics-calc-select'
     ),
+    dbc.Button(html.A('Télécharger CSV', href='#', id='lexical-csv-download', download='data.csv'), className='mb-2 mt-2'),
+    html.Br(),
     dbc.Label('Selectionner les topics', className='lead pt-4'),
     html.Br(),
-    dbc.Button('Tout afficher', id='lex-topics-show-button', color='success', className='mr-2 mb-2 mt-2'),
+    dbc.Button('Tout sélectionner', id='lex-topics-show-button', color='success', className='mr-2 mb-2 mt-2'),
     dbc.Button('Tout masquer', id='lex-topics-hide-button', color='primary', className='m-2'),
     dbc.Checklist(
         options=[
@@ -50,7 +52,7 @@ lex_topics_formgroup = dbc.FormGroup([
     html.Div(id='lex-topics-click-log', children='show:0 hide:0 last:0', style={'display': 'none'})
 ])
 
-lex_heatmap = dcc.Graph(id='lex-heatmap', style={'height': '95vh', 'width': '10vw'}) # 'height': '95vh'
+lex_heatmap = dcc.Graph(id='lex-heatmap', style={'height': '100vh', 'width': '10vw'}) # 'height': '95vh'
 
 
 
@@ -84,7 +86,8 @@ def update_lex_topics_2(log):
 
 @app.callback(
     [Output(component_id='lex-heatmap', component_property='figure'),
-     Output(component_id='lex-heatmap', component_property='style')],
+     Output(component_id='lex-heatmap', component_property='style'),
+     Output(component_id='lexical-csv-download', component_property='href')],
     [Input(component_id='lex-topics-checklist', component_property='value'),
      Input('lex-topics-data-select', 'value'),
      Input('lex-topics-calc-select', 'value')]
@@ -96,8 +99,9 @@ def update_lexical_heatmap(topics, data, calc):
         sub_lexcats = LEXCATS_TEXTS_DF[LEXCATS_TEXTS_DF.index.isin(TOPIC_REDUCTIONS_DF.index)].copy()
     elif data == 'paragraphs':
         # update PARAS to new values when done
-        tdf = LEXCATS_PARAS_DF.set_index(map(lambda x: x.split('_')[0], LEXCATS_PARAS_DF.index))
-        sub_lexcats = tdf[tdf.index.isin(TOPIC_REDUCTIONS_DF.index)].copy()
+        # tdf = LEXCATS_PARAS_DF.set_index(map(lambda x: x.split('_')[0], LEXCATS_PARAS_DF.index))
+        # sub_lexcats = tdf[tdf.index.isin(TOPIC_REDUCTIONS_DF.index)].copy()
+        sub_lexcats = LEXCATS_PARAS_DF[LEXCATS_PARAS_DF.index.isin(TOPIC_REDUCTIONS_DF.index)].copy()
     else:
         sub_lexcats = LEXCATS_ABS_DF[LEXCATS_ABS_DF.index.isin(TOPIC_REDUCTIONS_DF.index)].copy()
 
@@ -111,11 +115,13 @@ def update_lexical_heatmap(topics, data, calc):
             rf[topic] = sub_lexcats[sub_lexcats.index.isin(TOPIC_REDUCTIONS_DF[(TOPIC_REDUCTIONS_DF['main_topic'] == topic)].index)].mean()
         if calc == 'norm_means':
             rf = rf.divide(avg, axis=0)
-        return px.imshow(rf), {'height': '95vh', 'width': f'{int((len(topics)/80)*70+10)}vw'}
-        # return go.Figure(data=go.Heatmap(x=rf.columns, y=rf.index, z=rf)), {'height': '95vh', 'width': f'{int((len(topics)/80)*70+10)}vw'}
+        return px.imshow(rf), {'height': '95vh', 'width': f'{int((len(topics)/80)*70+10)}vw'}, \
+               "data:text/csv;charset=utf-8," + urllib.parse.quote(rf.to_csv(encoding='utf-8', index=True))
 
     # Corrs heatmap
     ids = TOPIC_REDUCTIONS_DF[TOPIC_REDUCTIONS_DF['main_topic'].isin(topics)].index
-    return px.imshow(sub_lexcats.loc[ids].corr().applymap(lambda x: 0 if x == 1 else x)), {'height': '95vh', 'width': f'{int((len(sub_lexcats.columns)/80)*70+10)}vw'}
+    rf = sub_lexcats.loc[ids].corr().applymap(lambda x: 0 if x == 1 else x)
+    return px.imshow(rf), {'height': '95vh', 'width': f'{int((len(sub_lexcats.columns)/80)*90+10)}vw'}, \
+           "data:text/csv;charset=utf-8," + urllib.parse.quote(rf.to_csv(encoding='utf-8', index=True))
 
 

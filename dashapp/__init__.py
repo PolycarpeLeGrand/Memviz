@@ -2,8 +2,9 @@ import pickle
 import dash
 import dash_bootstrap_components as dbc
 
-from config import METADATA_DF_PATH, TOPIC_REDUCTIONS_DF_PATH, DOC_TOPICS_DF_PATH, \
+from config import METADATA_DF_PATH, TOPIC_REDUCTIONS_DF_PATH, DOC_TOPICS_DF_PATH, LEXCATS_CSV_PATH, \
     TOPIC_WORDS_DF_PATH, TOPIC_MAPPING, PROJECT_TITLE, LEXCATS_TEXTS_DF_PATH, LEXCATS_ABS_DF_PATH, LEXCATS_PARAS_DF_PATH
+from tools.factories import csv_to_markdown
 
 G = 'https://fonts.googleapis.com/icon?family=Material+Icons'
 
@@ -15,16 +16,18 @@ def load_df(path):
         return pickle.load(temp)
 
 
+# metadata and topic modeling dfs
 METADATA_DF = load_df(METADATA_DF_PATH)
 DOC_TOPICS_DF = load_df(DOC_TOPICS_DF_PATH)
 TOPIC_WORDS_DF = load_df(TOPIC_WORDS_DF_PATH)
 TOPIC_REDUCTIONS_DF = load_df(TOPIC_REDUCTIONS_DF_PATH)
 
-# LEXICON_DF = load_df(LEXICON_DF_PATH)
+# Lexcat dfs and markdown
 LEXCATS_TEXTS_DF = load_df(LEXCATS_TEXTS_DF_PATH)
 LEXCATS_ABS_DF = load_df(LEXCATS_ABS_DF_PATH)
 LEXCATS_PARAS_DF = load_df(LEXCATS_PARAS_DF_PATH)
-
+LEXCATS_PARAS_DF = LEXCATS_PARAS_DF.set_index(map(lambda x: x.split('_')[0], LEXCATS_PARAS_DF.index))
+LEXCATS_MARKDOWN = csv_to_markdown(LEXCATS_CSV_PATH)
 
 # Mapping topic names
 DOC_TOPICS_DF.columns = DOC_TOPICS_DF.columns.map(TOPIC_MAPPING)

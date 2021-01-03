@@ -10,6 +10,7 @@ LEXICON_DF_PATH = base_storage_path / 'corpusframes/lexicon_corpusframe.p'
 LEXCATS_TEXTS_DF_PATH = base_storage_path / 'analysis/lexcats/lexcats_texts_3_df.p'
 LEXCATS_ABS_DF_PATH = base_storage_path / 'analysis/lexcats/lexcats_abs_3_df.p'
 LEXCATS_PARAS_DF_PATH = base_storage_path / 'analysis/lexcats/lexcats_paras_3_df.p'
+LEXCATS_CSV_PATH = base_storage_path / 'csvs/lexcats_3.csv'
 
 TOPIC_WORDS_DF_PATH = base_storage_path / 'analysis/LDA' / topic_model_name / 'topic_words_df.p'
 DOC_TOPICS_DF_PATH = base_storage_path / 'analysis/LDA' / topic_model_name / 'doc_topics_df.p'
