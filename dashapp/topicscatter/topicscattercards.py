@@ -235,7 +235,7 @@ def update_doc_details_topics(data):
 
 
 @app.callback(
-    [Output(component_id='cluster-details-number ', component_property='children'),
+    [Output(component_id='cluster-details-number', component_property='children'),
      Output(component_id='cluster-details-topics', component_property='children')],
     [Input(component_id='topics-scatter', component_property='clickData')],
     [State(component_id='cluster-memory', component_property='data')], prevent_initial_call=True
