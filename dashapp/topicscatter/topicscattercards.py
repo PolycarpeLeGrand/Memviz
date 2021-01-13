@@ -1,5 +1,4 @@
 import dash_core_components as dcc
-import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
@@ -7,7 +6,6 @@ import plotly.express as px
 from sklearn.cluster import MiniBatchKMeans
 import pickle
 
-from tools.factories import text_with_info_tooltip
 from dashapp import app, DOC_TOPICS_DF, TOPIC_REDUCTIONS_DF, TOPIC_WORDS_DF
 from config import VIZ_DICTS_PATH
 
@@ -51,6 +49,8 @@ n_dims_formgroup = dbc.FormGroup([
     )
 ], className='pb-2')
 
+# old custom n clusters
+'''
 clusters_formgroup = dbc.FormGroup([
     dbc.Label('Nombre de clusters (1-300)', className='h6'),
     dbc.Row([
@@ -58,6 +58,13 @@ clusters_formgroup = dbc.FormGroup([
         dbc.Col([dbc.Button('Update', color='success', id='cluster-update-button')]),
     ]),
     dbc.FormText('Entrer le nombre et cliquer sur le bouton pour mettre à jour (peut prendre quelques secondes).'),
+], className='pb-2')
+'''
+
+clusters_formgroup = dbc.FormGroup([
+    dbc.Label('Nombre de clusters (1-300)', className='h6'),
+    dbc.Select(id='clusters-select', value='clustering_7',
+               options=[{'label': f'{n} Clusters', 'value': f'clustering_{n}'} for n in [5, 7, 10, 15, 20, 25, 40]]),
 ], className='pb-2')
 
 # Form with the abobove formgroups
@@ -115,7 +122,6 @@ cluster_details_listgroup = dbc.ListGroup([
 # Card with this tab's content
 topics_scatter_card = dbc.Card([
     dbc.CardBody([
-        dcc.Store(id='cluster-memory', data={}),
         dbc.Row([
             dbc.Col([scatter_form], width=2),
             dbc.Col([dcc.Graph(id='topics-scatter', style={'height': '80vh'}, className='bg-light')]) # , 'backgroundColor': 'ghostwhite'
@@ -132,15 +138,15 @@ topics_scatter_card = dbc.Card([
 # Callbacks
 @app.callback(
     [Output(component_id='topics-scatter', component_property='figure'),
-     Output(component_id='sample-size-label', component_property='children'),
-     Output(component_id='cluster-memory', component_property='data')],
+     Output(component_id='sample-size-label', component_property='children')],
     [Input(component_id='topics-sample-slider', component_property='value'),
      Input(component_id='topic-scatter-algo-radio', component_property='value'),
      Input(component_id='topic-scatter-dims-radio', component_property='value'),
-     Input(component_id='cluster-update-button', component_property='n_clicks')],
-    [State(component_id='cluster-number-input', component_property='value')] # add saved data to state and check if == num clusters before update?
+     Input(component_id='clusters-select', component_property='value')]
+     #Input(component_id='cluster-update-button', component_property='n_clicks')],
+    #[State(component_id='cluster-number-input', component_property='value')] # add saved data to state and check if == num clusters before update?
 )
-def update_topics_scatter(slider_value, reducer_algo, n_dims, clusters_activated, n_clusters):
+def update_topics_scatter(slider_value, reducer_algo, n_dims, cluster_col): #clusters_activated, n_clusters):
     """Builds the scatter from the inputs. Can be 2d or 3d, with umap or tsne reductions and N clusters"""
 
     # Make new df from base info. We use .loc instead of [[]] because it copies or something.
@@ -154,12 +160,9 @@ def update_topics_scatter(slider_value, reducer_algo, n_dims, clusters_activated
     else:
         tdf[['x', 'y', 'z']] = TOPIC_REDUCTIONS_DF[[f'{reducer_prefix}3d_x', f'{reducer_prefix}3d_y', f'{reducer_prefix}3d_z']]
 
-    # Calc clusters and add col, all zeros if clusters are not activated
-    tdf['cluster'] = MiniBatchKMeans(n_clusters=n_clusters, random_state=2112).fit_predict(DOC_TOPICS_DF)
-
-    # Make discrete to prevent color scale. There's probably a better way to do this...
-    tdf['cluster'] = tdf['cluster'].map(str)
-    cluster_dict = tdf['cluster'].to_dict()
+    # Calc clusters and add col, old
+    # tdf['cluster'] = MiniBatchKMeans(n_clusters=n_clusters, random_state=2112).fit_predict(DOC_TOPICS_DF)
+    tdf['cluster'] = TOPIC_REDUCTIONS_DF[cluster_col]
 
     # Take a sample
     tdf = tdf.sample(int(slider_value*len(TOPIC_REDUCTIONS_DF)))
@@ -193,7 +196,7 @@ def update_topics_scatter(slider_value, reducer_algo, n_dims, clusters_activated
 
     fig.update_traces(marker={'size': 3}) # hovertemplate=hover_template, woudl be cleaner with hovertemplate but it's a bit of work
     fig.update_layout(paper_bgcolor='rgba(0,0,0,0)')
-    return fig, sample_size_label_value, cluster_dict
+    return fig, sample_size_label_value
 
 
 @app.callback(
@@ -238,9 +241,9 @@ def update_doc_details_topics(data):
     [Output(component_id='cluster-details-number', component_property='children'),
      Output(component_id='cluster-details-topics', component_property='children')],
     [Input(component_id='topics-scatter', component_property='clickData')],
-    [State(component_id='cluster-memory', component_property='data')], prevent_initial_call=True
+    [State(component_id='clusters-select', component_property='value')], prevent_initial_call=True
 )
-def update_doc_details_topics(data, cluster_dict):
+def update_doc_details_cluster(data, cluster_col):
     """Updates cluster_details_listgroup to show top topics of selected cluster"""
 
     # Number of word to show in top words list
@@ -253,7 +256,9 @@ def update_doc_details_topics(data, cluster_dict):
     #tdf = tdf[(tdf['cluster'] == int(cluster))]
     #tdf = tdf.drop('cluster', axis=1)
 
-    tdf = DOC_TOPICS_DF.loc[[doc_id for doc_id, c in cluster_dict.items() if c == cluster]]
+    # tdf = DOC_TOPICS_DF.loc[[doc_id for doc_id, c in cluster_dict.items() if c == cluster]]
+    tdf = DOC_TOPICS_DF.loc[TOPIC_REDUCTIONS_DF[(TOPIC_REDUCTIONS_DF[cluster_col] == cluster)].index]
+    # print(TOPIC_REDUCTIONS_DF[(TOPIC_REDUCTIONS_DF[cluster_col] == cluster)])
 
     top_topics = tdf.mean().nlargest(n_top_topics)
     top_topics = f'  \n'.join(f'{topic} - {avg:.4f}' for topic, avg in top_topics.items())

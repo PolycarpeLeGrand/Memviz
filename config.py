@@ -1,8 +1,14 @@
 from pathlib import Path
 
 # Data paths
+# Laptop
 base_storage_path = Path('C:/Users/Sanchez/Desktop/m3data')
 topic_model_name = 'topics_80_2_02_100_3_50_2k'
+
+# Pi
+# base_storage_path = Path('/media/pi/Elements/m3data')
+# topic_model_name = 'topics_80_2_02_100_3_50_2k'
+
 
 METADATA_DF_PATH = base_storage_path / 'corpusframes/metadata_corpusframe.p'
 LEXICON_DF_PATH = base_storage_path / 'corpusframes/lexicon_corpusframe.p'
@@ -16,7 +22,6 @@ TOPIC_WORDS_DF_PATH = base_storage_path / 'analysis/LDA' / topic_model_name / 't
 DOC_TOPICS_DF_PATH = base_storage_path / 'analysis/LDA' / topic_model_name / 'doc_topics_df.p'
 TOPIC_REDUCTIONS_DF_PATH = base_storage_path / 'analysis/LDA' / topic_model_name / 'reductions_df.p'
 VIZ_DICTS_PATH = base_storage_path / 'viz_dicts'
-
 
 # Ip details when test server is run on public mode
 PORT = 33
@@ -36,11 +41,11 @@ CONTRIBUTORS = {
                      ' when there is more text and multiple lines might be needed.',
 }
 
-TOPIC_MAPPING = {'topic_0': 'Population',
-                 'topic_1': 'Animal experiments',
+TOPIC_MAPPING = {'topic_0': 'Population-region',
+                 'topic_1': 'Animal models',
                  'topic_2': 'Demographics',
                  'topic_3': 'Exposure factors',
-                 'topic_4': 'Enzyme production',
+                 'topic_4': 'Enzyme-production',
                  'topic_5': 'Plant genetics and species',
                  'topic_6': 'Genetic pathway',
                  'topic_7': 'Community health',
@@ -53,8 +58,8 @@ TOPIC_MAPPING = {'topic_0': 'Population',
                  'topic_14': 'Infection-virus',
                  'topic_15': 'Test and prediction',
                  'topic_16': 'Genotype-phenotype',
-                 'topic_17': 'Research emphasis (jargon)',
-                 'topic_18': 'Evolutionary biology and phylogenetics',
+                 'topic_17': 'Linguistic emphasis (jargon)',
+                 'topic_18': 'Evolution and phylogenetics',
                  'topic_19': 'Bacteria',
                  'topic_20': 'Cell-oncology',
                  'topic_21': 'Chemical',
@@ -68,7 +73,7 @@ TOPIC_MAPPING = {'topic_0': 'Population',
                  'topic_29': 'Cell development',
                  'topic_30': 'PCR',
                  'topic_31': 'Nervous system',
-                 'topic_32': 'Weight and obesity',
+                 'topic_32': 'Weight-obesity',
                  'topic_33': 'Screening',
                  'topic_34': 'Statistics',
                  'topic_35': 'Life cycle and reproduction',
@@ -81,9 +86,9 @@ TOPIC_MAPPING = {'topic_0': 'Population',
                  'topic_42': 'Cancer',
                  'topic_43': 'Infection resistance',
                  'topic_44': 'Maternity',
-                 'topic_45': 'Muscle and motion',
+                 'topic_45': 'Muscle-motion',
                  'topic_46': 'Literature review',
-                 'topic_47': 'Therapy (cancer)',
+                 'topic_47': 'Therapy',
                  'topic_48': 'Prognostic',
                  'topic_49': 'Medical training',
                  'topic_50': 'Cattle',
@@ -91,18 +96,18 @@ TOPIC_MAPPING = {'topic_0': 'Population',
                  'topic_52': 'Protein domain',
                  'topic_53': 'Cardiovascular conditions',
                  'topic_54': 'Method-model',
-                 'topic_55': 'Change',
+                 'topic_55': 'Change-effect',
                  'topic_56': 'Score-measure',
                  'topic_57': 'Surgery',
                  'topic_58': 'Healthcare',
                  'topic_59': 'Antibody-protein',
-                 'topic_60': 'Cancer (tumor)',
+                 'topic_60': 'Cancer-tumor',
                  'topic_61': 'Respiratory',
                  'topic_62': 'Patient mortality',
-                 'topic_63': 'Drug',
+                 'topic_63': 'Drug-treatment',
                  'topic_64': 'Diabetes',
-                 'topic_65': 'Genetic expression',
-                 'topic_66': 'IT systems',
+                 'topic_65': 'Genetic expression rna',
+                 'topic_66': 'Database-software',
                  'topic_67': 'Oxidative stress',
                  'topic_68': 'Immunology',
                  'topic_69': 'Clinical trials',

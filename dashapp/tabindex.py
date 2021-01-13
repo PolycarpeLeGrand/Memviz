@@ -17,7 +17,7 @@ from dashapp.lexicalheat.lexicalheattab import lexicalheat_tab
 TABS = [
     {'name': 'tab-0', 'url': '/metadata', 'label': 'Metadonnées', 'container': metadata_tab},
     {'name': 'tab-1', 'url': '/topicscatter', 'label': 'Topics et Clusters', 'container': topicscatter_tab},
-    {'name': 'tab-2', 'url': '/lex', 'label': 'Lexique', 'container': lexicalheat_tab},
+    {'name': 'tab-2', 'url': '/lex', 'label': 'Analyses Lexicales', 'container': lexicalheat_tab},
     {'name': 'tab-3', 'url': '/about', 'label': 'About', 'container': about_tab},
 ]
 

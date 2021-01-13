@@ -4,6 +4,7 @@ import dash_bootstrap_components as dbc
 
 from tools.factories import jumbotron_2_columns
 from dashapp.topicscatter.topicscattercards import topics_scatter_card
+from dashapp.topicscatter.clusterdetailscard import cluster_details_card
 
 
 TAB_ID = 'topicscatter-tab'
@@ -37,7 +38,9 @@ topicscatter_tab = dbc.Container([
         # imported cards go here
         dbc.Col(topics_scatter_card),
     ]),
-    dbc.Row([]),
+    dbc.Row([
+        cluster_details_card
+    ], className='pt-3 pl-3 pr-3'),
 ], fluid=True, id=TAB_ID)
 
 
